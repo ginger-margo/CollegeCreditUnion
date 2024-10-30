@@ -1,46 +1,35 @@
 package com.creditunion.entities;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 public class Deposit {
-    
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; 
-    
-    private double amount; 
-    private String depositDate; 
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
 
-    // add relationship
-    // @ManyToOne
-    // private Loan loan; // Link to the Loan entity
+    private String depositDate;
+    private double amount;
 
-    // Constructors
+    // Empty Constructor
     public Deposit() {
     }
 
-    public Deposit(double amount, String depositDate) {
-        this.amount = amount;
+    // Constructor
+    public Deposit(int id, String depositDate, double amount) {
+        this.id = id;
         this.depositDate = depositDate;
+        this.amount = amount;
     }
 
     // Getters and Setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
     }
 
     public String getDepositDate() {
@@ -50,5 +39,12 @@ public class Deposit {
     public void setDepositDate(String depositDate) {
         this.depositDate = depositDate;
     }
-    
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
 }

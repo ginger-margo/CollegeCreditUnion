@@ -1,36 +1,40 @@
 package com.creditunion.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
 @Entity
 public class Loan {
-    
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; 
-    
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
     private String description;
-    private double amount; 
+    private double amount;
 
-    // Add relationships if necessary
-    // @ManyToOne
-    // private Student student; // Link to the Student entity
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Deposit> deposits = new ArrayList<Deposit>();
 
-    // Constructors
+    // Empty Constructor
     public Loan() {
     }
 
-    public Loan(String description, double amount) {
+    // Constructor
+    public Loan(int id, String description, double amount, List<Deposit> deposits) {
+        this.id = id;
         this.description = description;
         this.amount = amount;
+        this.deposits = deposits;
     }
 
     // Getters and Setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -49,5 +53,12 @@ public class Loan {
     public void setAmount(double amount) {
         this.amount = amount;
     }
-    
+
+    public List<Deposit> getDeposits() {
+        return deposits;
+    }
+
+    public void setDeposits(List<Deposit> deposits) {
+        this.deposits = deposits;
+    }
 }
