@@ -11,6 +11,9 @@ public class Deposit {
 
     private String depositDate;
     private double amount;
+    
+    @ManyToOne
+    private Loan loan; // each deposit associated with a specific loan, useful to filter by loan
 
     // Empty Constructor
     public Deposit() {
@@ -46,5 +49,13 @@ public class Deposit {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+    
+    public Loan getLoan() {
+        return loan;
+    }
+
+    public void setLoan(Loan loan) {
+        this.loan = loan;
     }
 }
