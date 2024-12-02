@@ -10,6 +10,8 @@ import java.util.List;
 public class ProjectionsTableHandler extends DefaultHandler {
 
     private List<Row> rows = new ArrayList<>();
+    private String ms;
+    private int inventorySubmissionYear;
     private Row currentRow;
     private StringBuilder currentValue = new StringBuilder();
 
@@ -19,6 +21,12 @@ public class ProjectionsTableHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        if ("MS".equals(qName)){
+            ms = currentValue.toString();
+        }
+        if ("Inventory_Submission_Year".equals(qName)){
+            inventorySubmissionYear = Integer.parseInt(currentValue.toString());
+        }
         if ("Row".equals(qName)) {
             currentRow = new Row();
         }
@@ -60,5 +68,13 @@ public class ProjectionsTableHandler extends DefaultHandler {
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         currentValue.append(ch, start, length);
+    }
+
+    public String getMs() {
+        return ms;
+    }
+
+    public int getInventorySubmissionYear() {
+        return inventorySubmissionYear;
     }
 }
