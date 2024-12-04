@@ -5,9 +5,11 @@ import org.example.service.EmissionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller // entrance point from user journey
 @RequiredArgsConstructor // constructor to initialize emissionService and others
+@RequestMapping("/emissions")
 public class EmissionController {
 
     private final EmissionService emissionService;

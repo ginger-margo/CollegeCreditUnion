@@ -3,6 +3,10 @@ package org.example;
 
 import org.example.model.ProjectionsTableHandler;
 import org.example.model.Row;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.SAXParser;
@@ -14,9 +18,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-//@SpringBootApplication
+@SpringBootApplication
+@EnableJpaRepositories("org.example.*")
 public class Main {
     public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
 
     }
 }

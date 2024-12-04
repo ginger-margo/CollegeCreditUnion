@@ -2,6 +2,7 @@ package org.example.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
@@ -10,6 +11,7 @@ import java.util.UUID;
 @Entity
 @Data
 @AllArgsConstructor
+@Builder //flexible constructor
 public class Emission {
 
     @Column
@@ -22,11 +24,15 @@ public class Emission {
     @Column
     private String scenario;
     @Column
-    private String gas_units;
+    private String gasUnits;
     @Column
     private String nk;
     @Column
     private double value;
+
+    @ManyToOne
+    @JoinColumn(name = "year_report_id", referencedColumnName = "id")
+    private YearReport yearReport;
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")

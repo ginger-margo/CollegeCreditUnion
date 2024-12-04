@@ -1,7 +1,10 @@
 package org.example.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.model.*;
+import org.example.repository.YearReportRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.InputSource;
 
 import javax.xml.parsers.SAXParser;
@@ -16,10 +19,16 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EmissionService {
 
+    private final YearReportRepository yearReportRepository;
+    private final CategoryService categoryService;
+
+    @Transactional
     public void addAllCategories() {
         YearReport yearReport = readYearReportFromUrl("http://cdr.eionet.europa.eu/ie/eu/mmr/art04-13-14_lcds_pams_projections/projections/envvxoklg/MMR_IRArticle23T1_IE_2016v2.xml");
+        yearReportRepository.save(yearReport);
     }
 
     private YearReport readYearReportFromUrl(String fileUrl) {
@@ -52,15 +61,16 @@ public class EmissionService {
                 rows.forEach(System.out::println);
             }
             List<Emission> emissions = handler.getRows().stream()
-                    .map(row -> new Emission(
-                            UUID.randomUUID(),
-                            row.getYear(),
-                            row.getScenario(),
-                            row.getGasUnits(),
-                            row.getNk(),
-                            row.getValue(),
-                            new Category(UUID.randomUUID(), row.getCategory(), "")
-                    )).collect(Collectors.toList());
+                    .map(row -> Emission.builder()
+                            .id(UUID.randomUUID())
+                            .year(row.getYear())
+                            .scenario(row.getScenario())
+                            .gasUnits(row.getGasUnits())
+                            .nk(row.getNk())
+                            .value(row.getValue())
+                            .category(createCategoryIfNotExists(row))
+                            .build()
+                    ).collect(Collectors.toList());
             return new YearReport(UUID.randomUUID(), handler.getInventorySubmissionYear(), handler.getMs(), emissions);
 
         } catch (Exception e) {
@@ -68,5 +78,9 @@ public class EmissionService {
             return null;
         }
 
+    }
+
+    private Category createCategoryIfNotExists(Row row) {
+        return categoryService.createCategoryIfNotExists(row.getCategory());
     }
 }

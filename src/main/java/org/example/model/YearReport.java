@@ -2,6 +2,7 @@ package org.example.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.List;
 import java.util.UUID;
@@ -9,6 +10,7 @@ import java.util.UUID;
 @Entity
 @Table
 @AllArgsConstructor
+@Data
 public class YearReport {
 
     @Column
@@ -20,8 +22,9 @@ public class YearReport {
     private int year;
     @Column
     private String country;
-    @OneToMany(mappedBy = "year_report_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "yearReport", cascade = CascadeType.ALL)
     private List<Emission> emissions;
+
 
 
 
