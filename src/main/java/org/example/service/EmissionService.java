@@ -1,7 +1,10 @@
 package org.example.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.example.dto.EmissionDTO;
 import org.example.model.*;
+import org.example.repository.EmissionRepository;
 import org.example.repository.YearReportRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,7 +29,8 @@ public class EmissionService {
     private final YearReportRepository yearReportRepository;
     private final CategoryService categoryService;
 
-    @Transactional
+    private final EmissionRepository emissionRepository;
+
     public void addAllCategories() {
         YearReport yearReport = readYearReportFromUrl("http://cdr.eionet.europa.eu/ie/eu/mmr/art04-13-14_lcds_pams_projections/projections/envvxoklg/MMR_IRArticle23T1_IE_2016v2.xml");
         yearReportRepository.save(yearReport);
@@ -82,5 +87,46 @@ public class EmissionService {
 
     private Category createCategoryIfNotExists(Row row) {
         return categoryService.createCategoryIfNotExists(row.getCategory());
+    }
+
+    public List<Emission> getAllEmissions() {
+       return (List<Emission>) emissionRepository.findAll(); // findAll returns Iterable, casting it to List
+    }
+
+    public Optional<Emission> findEmissionById(UUID id) {
+        return emissionRepository.findById(id); // no casting because findById returns Optional
+    }
+
+    public Emission addNewEmission(EmissionDTO emissionDTO) {
+        Emission emission = Emission.builder()
+                .year(emissionDTO.year())
+                .scenario(emissionDTO.scenario())
+                .gasUnits(emissionDTO.gasUnits())
+                .nk(emissionDTO.nk())
+                .value(emissionDTO.value())
+                .id(UUID.randomUUID())
+                .category(categoryService.createCategoryIfNotExists(emissionDTO.category()))
+                .build();
+        return emissionRepository.save(emission);
+    }
+
+    public Emission updateEmission(UUID id, EmissionDTO emissionDTO) {
+        Optional<Emission> emissionOPT = emissionRepository.findById(id);
+        if (emissionOPT.isEmpty()) {
+            throw new EntityNotFoundException();
+        } else {
+            Emission emission = emissionOPT.get();
+            emission.setYear(emissionDTO.year());
+            emission.setCategory(categoryService.createCategoryIfNotExists(emissionDTO.category()));
+            emission.setGasUnits(emissionDTO.gasUnits());
+            emission.setNk(emissionDTO.nk());
+            emission.setValue(emissionDTO.value());
+            emission.setScenario(emissionDTO.scenario());
+            return emissionRepository.save(emission);
+        }
+    }
+
+    public void deleteEmission(UUID id) {
+        emissionRepository.deleteById(id);
     }
 }

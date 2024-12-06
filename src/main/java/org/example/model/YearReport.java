@@ -22,7 +22,7 @@ public class YearReport {
     private int year;
     @Column
     private String country;
-    @OneToMany(mappedBy = "yearReport", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "yearReport", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Emission> emissions;
 
 

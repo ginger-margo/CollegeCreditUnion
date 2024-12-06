@@ -30,11 +30,11 @@ public class Emission {
     @Column
     private double value;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "year_report_id", referencedColumnName = "id")
     private YearReport yearReport;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 }
