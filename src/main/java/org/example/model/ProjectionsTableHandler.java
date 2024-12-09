@@ -21,12 +21,6 @@ public class ProjectionsTableHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if ("MS".equals(qName)){
-            ms = currentValue.toString();
-        }
-        if ("Inventory_Submission_Year".equals(qName)){
-            inventorySubmissionYear = Integer.parseInt(currentValue.toString());
-        }
         if ("Row".equals(qName)) {
             currentRow = new Row();
         }
@@ -35,6 +29,11 @@ public class ProjectionsTableHandler extends DefaultHandler {
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
+        if (qName.equals("Inventory_Submission_Year")) {
+            inventorySubmissionYear = Integer.parseInt(currentValue.toString());
+        } else if (qName.equals("MS")) {
+            ms = currentValue.toString();
+        }
         if (currentRow != null) {
             switch (qName) {
                 case "Category__1_3":

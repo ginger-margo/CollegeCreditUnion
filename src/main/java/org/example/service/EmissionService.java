@@ -31,6 +31,7 @@ public class EmissionService {
 
     private final EmissionRepository emissionRepository;
 
+    @Transactional
     public void addAllCategories() {
         YearReport yearReport = readYearReportFromUrl("http://cdr.eionet.europa.eu/ie/eu/mmr/art04-13-14_lcds_pams_projections/projections/envvxoklg/MMR_IRArticle23T1_IE_2016v2.xml");
         yearReportRepository.save(yearReport);
@@ -63,11 +64,9 @@ public class EmissionService {
                 saxParser.parse(new InputSource(inputStream), handler);
                 List<Row> rows = handler.getRows();
                 System.out.println("Parsed " + rows.size() + " rows.");
-                rows.forEach(System.out::println);
             }
             List<Emission> emissions = handler.getRows().stream()
                     .map(row -> Emission.builder()
-                            .id(UUID.randomUUID())
                             .year(row.getYear())
                             .scenario(row.getScenario())
                             .gasUnits(row.getGasUnits())
@@ -76,7 +75,7 @@ public class EmissionService {
                             .category(createCategoryIfNotExists(row))
                             .build()
                     ).collect(Collectors.toList());
-            return new YearReport(UUID.randomUUID(), handler.getInventorySubmissionYear(), handler.getMs(), emissions);
+            return new YearReport(null, handler.getInventorySubmissionYear(), handler.getMs(), emissions);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,6 +96,7 @@ public class EmissionService {
         return emissionRepository.findById(id); // no casting because findById returns Optional
     }
 
+    @Transactional
     public Emission addNewEmission(EmissionDTO emissionDTO) {
         Emission emission = Emission.builder()
                 .year(emissionDTO.year())
@@ -104,7 +104,6 @@ public class EmissionService {
                 .gasUnits(emissionDTO.gasUnits())
                 .nk(emissionDTO.nk())
                 .value(emissionDTO.value())
-                .id(UUID.randomUUID())
                 .category(categoryService.createCategoryIfNotExists(emissionDTO.category()))
                 .build();
         return emissionRepository.save(emission);

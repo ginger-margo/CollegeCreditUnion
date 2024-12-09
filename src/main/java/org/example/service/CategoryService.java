@@ -1,26 +1,29 @@
 package org.example.service;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.example.model.Category;
 import org.example.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
+    private final EntityManager entityManager;
 
 
-    public Category createCategoryIfNotExists(String category) {
-        Optional<Category> categoryOpt = categoryRepository.findByName(category);
+    @Transactional
+    public Category createCategoryIfNotExists(String categoryName) {
+        Optional<Category> categoryOpt = categoryRepository.findByNameForUpdate(categoryName);
         if (categoryOpt.isPresent()) {
-            return categoryOpt.get();
-        } else {
-            return categoryRepository.save(new Category(UUID.randomUUID(), category, ""));
+            return entityManager.merge(categoryOpt.get());
         }
 
+        Category newCategory = new Category(null, categoryName, "");
+        return categoryRepository.save(newCategory);
     }
 }

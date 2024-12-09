@@ -2,18 +2,20 @@ package org.example.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.List;
+import java.util.UUID;
 
-@Entity
 @Table
+@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class YearReport {
+@Builder
+public class User {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -22,15 +24,9 @@ public class YearReport {
     private String id;
 
     @Column
-    private int year;
-
+    private String name;
     @Column
-    private String country;
-
-    @OneToMany(mappedBy = "yearReport", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Emission> emissions;
-
-
-
-
+    private String password;
+    @Column
+    private String role;
 }
