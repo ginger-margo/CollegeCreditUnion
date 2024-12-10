@@ -8,16 +8,16 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
 
-@Entity
-@Table //Table name or change in DB
+@Entity // JPA entity - table definition
+@Table //Usually in DB we use plurals (ie Categories??)
 @Data //using lombok to generate getters, setters, required args constructor and no args constructor
 @AllArgsConstructor
 @NoArgsConstructor
 public class Category {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Id // PK
+    @GeneratedValue(generator = "UUID") //automatically generatod uuid
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator") // custom generator for uuid (not used??)
     @Column(name = "id", columnDefinition = "CHAR(36)")
     private String id;
     @Column

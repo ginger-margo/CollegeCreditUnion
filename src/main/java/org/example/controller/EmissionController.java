@@ -3,7 +3,6 @@ package org.example.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.example.dto.EmissionDTO;
 import org.example.model.Emission;
 import org.example.service.EmissionService;

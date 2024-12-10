@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+// acts like a bridge between User and Spring Security, wraps the User
+// and adapts it providing Spring with the necesery information
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
@@ -16,6 +18,7 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+    // returning the role f the user
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));

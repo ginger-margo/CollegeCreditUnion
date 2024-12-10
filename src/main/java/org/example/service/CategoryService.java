@@ -9,14 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@Service
+@Service // spring service for dependency injection
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final EntityManager entityManager;
 
 
-    @Transactional
+    @Transactional //database operations completed fully or rolled back if error
     public Category createCategoryIfNotExists(String categoryName) {
         Optional<Category> categoryOpt = categoryRepository.findByNameForUpdate(categoryName);
         if (categoryOpt.isPresent()) {

@@ -19,21 +19,22 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    // checks what pattern is used to grant correct
+    // checks what pattern is used to grant correct access
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/register").permitAll()
-                .requestMatchers("/users/", "/emissions/").authenticated()
-                .requestMatchers("/admin/").hasRole("ADMIN")
+                .requestMatchers("/auth/register").permitAll() // open to anyone
+                .requestMatchers("/users/", "/emissions/").authenticated() // for registered users
+                .requestMatchers("/admin/").hasRole("ADMIN") //only for admin
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
         return http.build();
     }
 
+    // connects CustomUserDetailsService with Spring Security
     @Bean
     public AuthenticationManager authManager(HttpSecurity http, BCryptPasswordEncoder passwordEncoder) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)

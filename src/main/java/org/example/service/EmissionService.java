@@ -37,11 +37,12 @@ public class EmissionService {
         yearReportRepository.save(yearReport);
     }
 
+    // parsing and saving to db
     private YearReport readYearReportFromUrl(String fileUrl) {
 
         try {
             HttpClient client = HttpClient.newBuilder()
-                    .followRedirects(HttpClient.Redirect.ALWAYS) // Handle redirects
+                    .followRedirects(HttpClient.Redirect.ALWAYS) // handle redirects
                     .build();
 
             HttpRequest request = HttpRequest.newBuilder()
@@ -55,16 +56,17 @@ public class EmissionService {
                 throw new RuntimeException("Failed to fetch file: HTTP code " + response.statusCode());
             }
 
-            ProjectionsTableHandler handler = new ProjectionsTableHandler();
-            try (InputStream inputStream = response.body()) {
+            ProjectionsTableHandler handler = new ProjectionsTableHandler(); //SAX handler to process the XML elements
+            try (InputStream inputStream = response.body()) { // gets the InputStream containing the XML data
 
-                SAXParserFactory factory = SAXParserFactory.newInstance();
-                SAXParser saxParser = factory.newSAXParser();
+                SAXParserFactory factory = SAXParserFactory.newInstance(); //factory for sax parser
+                SAXParser saxParser = factory.newSAXParser(); // creates new sax parser
 
                 saxParser.parse(new InputSource(inputStream), handler);
-                List<Row> rows = handler.getRows();
+                List<Row> rows = handler.getRows(); //retriving and parsing rows into a list of row objects
                 System.out.println("Parsed " + rows.size() + " rows.");
             }
+            // transforming rows into emissions
             List<Emission> emissions = handler.getRows().stream()
                     .map(row -> Emission.builder()
                             .year(row.getYear())

@@ -41,7 +41,7 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<Void> deleteUser(@RequestBody UserDTO userDTO){
         User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!currentUser.getRole().equals("ADMIN")) {
+        if (!currentUser.getRole().equals("ADMIN")) { // only the admin cam delete
             userService.deleteUser(userDTO);
         }
         return ResponseEntity.ok().build();
